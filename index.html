@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FurnitureStore | Premium Home Decor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; color: #333; }
+        
+        /* NAVBAR */
+        .navbar { padding: 15px 0; border-bottom: 1px solid #eee; }
+
+        /* HERO STYLE - Diperbaiki agar tidak nabrak */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg') center/cover no-repeat;
+            min-height: 60vh; /* Tinggi ditambah agar teks tidak terlalu bawah */
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding-bottom: 100px; /* Ruang untuk kartu fitur di bawahnya */
+        }
+
+        /* FEATURE SECTION */
+        .features-container {
+            margin-top: -80px; /* Mengangkat sedikit ke atas hero */
+            position: relative;
+            z-index: 10;
+        }
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: 100%;
+            transition: 0.3s;
+            border: 1px solid #f1f1f1;
+        }
+        .feature-card:hover { transform: translateY(-5px); border-color: #198754; }
+        .feature-card i { font-size: 2rem; color: #198754; margin-bottom: 15px; display: block; }
+
+        /* PRODUCT CARDS */
+        .card-product {
+            border: none;
+            transition: all 0.3s ease;
+            height: 100%;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .card-product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        .product-img-container {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: #fff;
+        }
+        .product-img { max-height: 100%; max-width: 100%; object-fit: contain; }
+
+        /* PAGINATION */
+        .pagination .page-link { color: #198754; border: 1px solid #dee2e6; margin: 0 3px; border-radius: 5px; }
+        .pagination .page-item.active .page-link { background-color: #198754; border-color: #198754; color: white; }
+
+        /* PAGE LOGIC */
+        .page-section { display: none; min-height: 80vh; }
+        .page-section.active { display: block; }
+
+        /* PAYMENT METHOD STYLES */
+        .payment-option {
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+}
+
+        .payment-option:hover { border-color: #198754; background-color: #f8fffb; }
+        .payment-option input[type="radio"] { display: none; }
+        .payment-option input[type="radio"]:checked + .payment-content { color: #198754; }
+        .payment-option.selected { border-color: #198754; background-color: #f8fffb; }
+        .payment-icon { font-size: 1.5rem; margin-right: 15px; color: #198754; }
+
+</style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+  <div class="container">
+    <a href="#" onclick="showPage('home')" class="d-flex align-items-center text-decoration-none">
+      <img src="https://cdn3.f-cdn.com/contestentries/2267153/50960589/649148addb0fb_thumb900.jpg" alt="Logo" width="40" class="me-2">
+      <span class="navbar-brand fw-bold mb-0">FurnitureStore</span>
+    </a>
+    
+    <div class="mx-lg-5 flex-grow-1 d-none d-lg-block">
+        <div class="input-group">
+            <input type="text" class="form-control bg-light border-0 shadow-none" placeholder="Cari furnitur...">
+            <span class="input-group-text bg-light border-0"><i class="bi bi-search"></i></span>
+        </div>
+    </div>
+
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item"><a class="nav-link fw-bold px-3" href="#" onclick="showPage('home')">Home</a></li>
+        <li class="nav-item">
+            <a class="nav-link position-relative px-3" href="#" onclick="showPage('cart')">
+                <i class="bi bi-bag-heart fs-4"></i>
+                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+            </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="page-home" class="page-section active">
+    <section class="hero">
+      <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Sempurnakan Rumah Anda</h1>
+                <p class="lead mb-4">Temukan koleksi eksklusif furnitur modern dengan material kayu jati asli dan desain minimalis.</p>
+                <a href="#produk-list" class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-lg">Belanja Sekarang</a>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-container">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <i class="bi bi-truck"></i>
+                        <h6 class="fw-bold">Gratis Ongkir</h6>
+                        <p class="small text-muted mb-0">Pengiriman gratis untuk wilayah Kalimantan & Jawa.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <i class="bi bi-shield-check"></i>
+                        <h6 class="fw-bold">Garansi Resmi</h6>
+                        <p class="small text-muted mb-0">Jaminan kualitas produk hingga 2 tahun penggunaan.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                <div class="feature-card">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        <h6>30 Hari Retur</h6>
+                        <p class="small text-muted mb-0">Tidak cocok? Kembalikan dalam waktu 30 hari.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <i class="bi bi-gem"></i>
+                        <h6>Kualitas Premium</h6>
+                        <p class="small text-muted mb-0">Menggunakan kayu jati pilihan dan bahan terbaik.</p>
+                    </div>
+                </div>
+              </div>
+        </div>
+    </section>
+
+    <section id="produk-list" class="py-5">
+      <div class="container">
+        <h2 class="fw-bold mb-4 text-center">Koleksi Kami</h2>
+        <div class="row g-4" id="product-grid">
+            </div>
+
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center" id="pagination">
+                </ul>
+        </nav>
+      </div>
+    </section>
+</main>
+
+<main id="page-cart" class="page-section">
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">Keranjang Belanja</h2>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 mb-4" id="cart-items-list">
+                </div>
+
+            <div class="card border-0 shadow-sm p-4 mb-4">
+                <h5 class="fw-bold mb-4"><i class="bi bi-person-lines-fill me-2 text-success"></i>Data Pengiriman</h5>
+                <form id="checkout-form">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Nama Lengkap</label>
+                            <input type="text" id="cust-name" class="form-control bg-light border-0 py-2 shadow-none" placeholder="Masukkan nama lengkap" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Email</label>
+                            <input type="email" id="cust-email" class="form-control bg-light border-0 py-2 shadow-none" placeholder="nama@email.com" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">No. HP (WhatsApp)</label>
+                            <input type="tel" id="cust-phone" class="form-control bg-light border-0 py-2 shadow-none" placeholder="0812xxxxxxxx" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold">Alamat Lengkap</label>
+                            <textarea id="cust-address" class="form-control bg-light border-0 py-2 shadow-none" rows="3" placeholder="Nama jalan, nomor rumah, RT/RW, kecamatan, kota" required></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 100px;">
+                <h5 class="fw-bold mb-3">Ringkasan Harga</h5>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Total</span>
+                    <h4 id="cart-total" class="text-success fw-bold">Rp0</h4>
+                </div>
+                <hr>
+                <button class="btn btn-success w-100 py-3 fw-bold rounded-3 shadow-sm" onclick="prosesPembayaran()">
+                    Lanjut ke Pembayaran
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header border-0">
+            <h5 class="fw-bold">Pilih Metode Pembayaran</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <div class="payment-options-list">
+                <label class="payment-option w-100" onclick="selectPayment(this)">
+                    <input type="radio" name="paymentMethod" value="ShopeePay">
+                    <div class="d-flex align-items-center w-100">
+                        <i class="bi bi-wallet2 payment-icon"></i>
+                        <div class="payment-content fw-bold">ShopeePay / SpayLater</div>
+                    </div>
+                </label>
+                <label class="payment-option w-100" onclick="selectPayment(this)">
+                    <input type="radio" name="paymentMethod" value="Transfer Bank">
+                    <div class="d-flex align-items-center w-100">
+                        <i class="bi bi-bank payment-icon"></i>
+                        <div class="payment-content fw-bold">Transfer Bank (VA)</div>
+                    </div>
+                </label>
+                <label class="payment-option w-100" onclick="selectPayment(this)">
+                    <input type="radio" name="paymentMethod" value="Indomaret/Alfamart">
+                    <div class="d-flex align-items-center w-100">
+                        <i class="bi bi-shop payment-icon"></i>
+                        <div class="payment-content fw-bold">Indomaret / Alfamart</div>
+                    </div>
+                </label>
+            </div>
+            <button class="btn btn-success w-100 py-3 mt-3 fw-bold rounded-pill" onclick="konfirmasiFinal()">
+                Bayar Sekarang
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+
+<footer class="py-4 bg-dark text-white text-center mt-5">
+  <p class="mb-0 small opacity-50">© 2026 FurnitureStore Indonesia. Semua Hak Cipta Dilindungi.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const allProducts = [
+    { id: 1, name: "Sofa Minimalis Abu", price: 4999000, img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=500&auto=format", desc: "Sofa 2 dudukan yang nyaman dengan bahan fabric berkualitas tinggi." },
+    { id: 2, name: "Meja Kerja Putih", price: 1495000, img: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?q=80&w=500&auto=format", desc: "Meja kerja luas dengan desain minimalis untuk produktivitas Anda." },
+    { id: 3, name: "Kursi Kayu Ash", price: 899000, img: "https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=500&auto=format", desc: "Kursi kayu solid dengan serat alami yang menambah estetika ruangan." },
+    { id: 4, name: "Lampu Standing", price: 325000, img: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?q=80&w=500&auto=format", desc: "Pencahayaan hangat untuk sudut ruangan Anda di malam hari." },
+    { id: 5, name: "Rak Buku Kayu", price: 1250000, img: "https://images.unsplash.com/photo-1594620302200-9a762244a156?q=80&w=500&auto=format", desc: "Rak buku kokoh untuk menyimpan koleksi literatur favorit Anda." },
+    { id: 6, name: "Tanaman Monstera", price: 150000, img: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=500&auto=format", desc: "Sentuhan hijau alami untuk menyegarkan suasana di dalam rumah." },
+    { id: 7, name: "Tempat Tidur Brown", price: 7500000, img: "https://images.unsplash.com/photo-1505693314120-0d443867891c?q=80&w=500&auto=format", desc: "Rangka tempat tidur kayu oak yang kuat untuk istirahat berkualitas." },
+    { id: 8, name: "Meja Rias Putih", price: 2100000, img: "https://down-id.img.susercontent.com/file/id-11134207-7qukw-lk4mn0nz0q1b22", desc: "Meja rias elegan lengkap dengan cermin besar." },
+    { id: 9, name: "Lemari 2 Pintu", price: 3450000, img: "https://www.nitori.co.id/cdn/shop/files/030118901_700x700.jpg?v=1721791683", desc: "Penyimpanan pakaian yang luas dan terorganisir dengan baik." },
+    { id: 10, name: "Cermin Lindbyn", price: 450000, img: "https://images.unsplash.com/photo-1618220179428-22790b461013?q=80&w=500&auto=format", desc: "Cermin bulat dengan bingkai tipis untuk kesan ruangan luas." },
+    { id: 11, name: "Meja Samping", price: 650000, img: "https://images.unsplash.com/photo-1532372320572-cda25653a26d?q=80&w=500&auto=format", desc: "Meja kecil praktis untuk diletakkan di samping tempat tidur." },
+    { id: 12, name: "Karpet Area Grey", price: 1750000, img: "https://images.unsplash.com/photo-1575414003591-ece8d0416c7a?q=80&w=500&auto=format", desc: "Karpet lembut yang meredam suara dan memberikan kenyamanan." },
+    { id: 13, name: "Kursi Strandmon", price: 5800000, img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=500&auto=format", desc: "Kursi wingchair klasik untuk sudut baca yang nyaman." },
+    { id: 14, name: "Kursi Lengan Rotan", price: 1950000, img: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=500&auto=format", desc: "Anyaman rotan asli untuk nuansa tropis di dalam rumah." },
+    { id: 15, name: "Meja Kopi Bundar", price: 899000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBMaEgKBlheS8nXdgNrH9tPUjqm8t-988n2w&s", desc: "Meja kopi dengan top kaca yang mudah dibersihkan." },
+    { id: 16, name: "Jam Dinding Metal", price: 299000, img: "https://down-id.img.susercontent.com/file/sg-11134201-7rdw1-lybnti6014164d_tn", desc: "Jam dinding dengan desain industrial yang modern." },
+    { id: 17, name: "Gantungan Baju", price: 185000, img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=500&auto=format", desc: "Set gantungan kayu untuk menjaga bentuk pakaian Anda." },
+    { id: 18, name: "Vas Keramik Hijau", price: 125000, img: "https://sc04.alicdn.com/kf/H55caa03d176a4ee7bf5c86d728e6113cP.jpg", desc: "Vas keramik buatan tangan untuk aksen meja yang indah." }
+];
+
+let cart = [];
+let currentPage = 1;
+const itemsPerPage = 6;
+
+function showPage(pageId) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function renderProducts() {
+    const grid = document.getElementById('product-grid');
+    const start = (currentPage - 1) * itemsPerPage;
+    const paginated = allProducts.slice(start, start + itemsPerPage);
+
+    grid.innerHTML = paginated.map(p => `
+        <div class="col-6 col-md-4">
+            <div class="card card-product shadow-sm">
+                <div class="product-img-container" onclick="openDetail(${p.id})">
+                    <img src="${p.img}" class="product-img" alt="${p.name}">
+                </div>
+                <div class="card-body text-center p-3">
+                    <h6 class="fw-bold mb-1" onclick="openDetail(${p.id})" style="cursor:pointer">${p.name}</h6>
+                    <p class="text-success fw-bold mb-2">Rp${p.price.toLocaleString()}</p>
+                    <button onclick="addToCart(${p.id})" class="btn btn-sm btn-outline-success w-100 rounded-pill">Tambah</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    renderPagination();
+}
+
+function openDetail(id) {
+    const p = allProducts.find(x => x.id === id);
+    const modalHtml = `
+    <div class="modal fade" id="pModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0"><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body text-center p-4">
+                    <img src="${p.img}" class="img-fluid rounded mb-3" style="max-height:250px; object-fit:cover; width:100%">
+                    <h4 class="fw-bold">${p.name}</h4>
+                    <h5 class="text-success fw-bold">Rp${p.price.toLocaleString()}</h5>
+                    <p class="text-muted mt-3 small">${p.desc}</p>
+                    <button onclick="addToCart(${p.id})" class="btn btn-success w-100 mt-3 py-2 rounded-pill" data-bs-dismiss="modal">Tambah ke Keranjang</button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+    const old = document.getElementById('pModal');
+    if(old) old.remove();
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    new bootstrap.Modal(document.getElementById('pModal')).show();
+}
+
+function renderPagination() {
+    const pages = Math.ceil(allProducts.length / itemsPerPage);
+    let html = '';
+    for(let i=1; i<=pages; i++) {
+        html += `<li class="page-item ${i===currentPage?'active':''}"><a class="page-link" href="#produk-list" onclick="changePage(${i})">${i}</a></li>`;
+    }
+    document.getElementById('pagination').innerHTML = html;
+}
+
+function changePage(p) { currentPage = p; renderProducts(); }
+
+function addToCart(id) {
+    const p = allProducts.find(x => x.id === id);
+    const exist = cart.find(x => x.id === id);
+    if(exist) exist.qty++; else cart.push({...p, qty: 1});
+    updateUI();
+}
+
+function updateQty(id, d) {
+    const item = cart.find(x => x.id === id);
+    if(item) { item.qty += d; if(item.qty <= 0) cart = cart.filter(x => x.id !== id); }
+    updateUI();
+}
+
+function updateUI() {
+    document.getElementById('cart-count').innerText = cart.reduce((s, i) => s + i.qty, 0);
+    const list = document.getElementById('cart-items-list');
+    if(cart.length === 0) {
+        list.innerHTML = `<p class="text-center py-5 text-muted">Keranjang kosong.</p>`;
+    } else {
+        list.innerHTML = cart.map(i => `
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                <div class="d-flex align-items-center">
+                    <img src="${i.img}" width="60" height="60" class="me-3 rounded shadow-sm" style="object-fit:cover">
+                    <div><strong>${i.name}</strong><br><span class="text-success small">Rp${i.price.toLocaleString()}</span></div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <button onclick="updateQty(${i.id}, -1)" class="btn btn-sm btn-light border">-</button>
+                    <span class="mx-3 fw-bold">${i.qty}</span>
+                    <button onclick="updateQty(${i.id}, 1)" class="btn btn-sm btn-light border">+</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    document.getElementById('cart-total').innerText = 'Rp' + cart.reduce((s, i) => s + (i.price * i.qty), 0).toLocaleString();
+}
+
+// LOGIKA VALIDASI BARU
+function prosesPembayaran() {
+    // 1. Cek Keranjang (Wajib ada isi)
+    if (cart.length === 0) {
+        alert("⚠️ Keranjang belanja Anda kosong!\nSilakan pilih produk terlebih dahulu sebelum membayar.");
+        showPage('home'); // Arahkan kembali ke home untuk belanja
+        return;
+    }
+
+    // 2. Ambil data Form
+    const nama = document.getElementById('cust-name').value.trim();
+    const email = document.getElementById('cust-email').value.trim();
+    const hp = document.getElementById('cust-phone').value.trim();
+    const alamat = document.getElementById('cust-address').value.trim();
+
+    // 3. Cek Form (Wajib diisi semua)
+    if (!nama) { alert("Peringatan: Nama Lengkap belum diisi!"); document.getElementById('cust-name').focus(); return; }
+    if (!email) { alert("Peringatan: Email belum diisi!"); document.getElementById('cust-email').focus(); return; }
+    if (!hp) { alert("Peringatan: Nomor HP belum diisi!"); document.getElementById('cust-phone').focus(); return; }
+    if (!alamat) { alert("Peringatan: Alamat Pengiriman belum diisi!"); document.getElementById('cust-address').focus(); return; }
+
+    // 4. Jika semua lolos
+    alert(`✅ Pembayaran Berhasil!\n\nHalo ${nama}, pesanan Anda sedang kami proses.\nDetail pengiriman akan dikirim ke: ${email}`);
+    
+    // Reset segalanya setelah berhasil
+    cart = [];
+    document.getElementById('checkout-form').reset();
+    updateUI();
+    showPage('home');
+}
+
+// Fungsi pendukung untuk styling pilihan yang diklik
+function selectPayment(element) {
+    document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+}
+
+// UPDATE LOGIKA PEMBAYARAN
+function prosesPembayaran() {
+    // 1. Cek Keranjang
+    if (cart.length === 0) {
+        alert("⚠️ Keranjang belanja Anda kosong!");
+        showPage('home');
+        return;
+    }
+
+    // 2. Ambil & Cek Form
+    const nama = document.getElementById('cust-name').value.trim();
+    const email = document.getElementById('cust-email').value.trim();
+    const hp = document.getElementById('cust-phone').value.trim();
+    const alamat = document.getElementById('cust-address').value.trim();
+
+    if (!nama || !email || !hp || !alamat) {
+        alert("Peringatan: Mohon lengkapi Data Pengiriman terlebih dahulu!");
+        return;
+    }
+
+    // 3. Jika Valid, Tampilkan Modal Pilihan Pembayaran (Ala Shopee)
+    const pModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+    pModal.show();
+}
+
+function konfirmasiFinal() {
+    const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
+    
+    if (!selectedMethod) {
+        alert("Silakan pilih salah satu metode pembayaran!");
+        return;
+    }
+
+    const nama = document.getElementById('cust-name').value;
+    const metode = selectedMethod.value;
+    const total = document.getElementById('cart-total').innerText;
+
+    // Sembunyikan modal
+    bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+
+    // Notifikasi Sukses Final
+    alert(`✅ PESANAN DITERIMA!\n\nTerima kasih ${nama}.\nTotal Tagihan: ${total}\nMetode: ${metode}\n\nSilakan cek WhatsApp/Email Anda untuk instruksi pembayaran selanjutnya.`);
+    
+    // Reset
+    cart = [];
+    document.getElementById('checkout-form').reset();
+    document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+    updateUI();
+    showPage('home');
+}
+
+renderProducts();
+</script>
+</body>
+</html>
